@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Events</string>
+    <string name="Log_In_Title">Fargo Events App</string>
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="login_button">LOGIN</string>
+    <string name="ValidationMessage"></string>
+</resources>
