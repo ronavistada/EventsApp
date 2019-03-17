@@ -51,15 +51,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(loginIntent);
     }
 
-    private void showLoginAlert(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage(message)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+
 }
