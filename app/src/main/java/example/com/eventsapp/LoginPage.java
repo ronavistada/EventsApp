@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginPage extends AppCompatActivity {
 
     private EditText usernameInput;
     private EditText passwordInput;
