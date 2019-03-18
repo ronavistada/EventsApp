@@ -5,4 +5,7 @@
     <string name="password">PASSWORD</string>
     <string name="login_button">LOGIN</string>
     <string name="ValidationMessage"></string>
+    <string name="Event_Name"></string>
+    <string name="Event_Date"></string>
+    <string name="Event_Image">Snapshot of the event</string>
 </resources>
