@@ -1,5 +1,6 @@
 package example.com.eventsapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -40,11 +41,9 @@ public class LoginPage extends AppCompatActivity {
        passwordInput = findViewById(R.id.LoginPassword);
        validateMessage = findViewById(R.id.ValidateInputMessage);
        checkAuth();
-
-
     }
 
-    public void checkAuth(){
+    public void checkAuth(){ //method to check if the user should enter the events page
         if(token != null){
             Intent loginIntent = new Intent(LoginPage.this,Events.class);
             loginIntent.putExtra(Extra_Data,token.getToken());
@@ -53,12 +52,12 @@ public class LoginPage extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume() { //this method is here in case the users resumed the activity again
         super.onResume();
         checkAuth();
     }
 
-    public void onLogin(View view){
+    public void onLogin(View view){ //this method would validate the information entered by the user
         if(usernameInput.getText().toString().isEmpty()){
             Log.i("Main","Username Imput: "+usernameInput.getText().toString());
             validateMessage.setText("A username is required.");
@@ -74,7 +73,7 @@ public class LoginPage extends AppCompatActivity {
         }
     }
 
-    private void authorizeEntry(){
+    private void authorizeEntry(){ //this method will request the needed token
         PostDataService service = RetrofitClient.getRetrofitInstance().create(PostDataService.class);
         Call<Authtoken> call = service.getLogin(usernameInput.getText().toString(),passwordInput.getText().toString());
 
@@ -95,5 +94,14 @@ public class LoginPage extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() { //method to prevent users to use the back button if there is no token
+        if(token==null){
+            Toast.makeText(LoginPage.this, "Action Not Allowed", Toast.LENGTH_LONG).show();
+        }
+        else {
+            super.onBackPressed();
+        }
 
+    }
 }

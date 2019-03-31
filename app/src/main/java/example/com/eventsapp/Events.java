@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,13 +44,19 @@ public class Events extends AppCompatActivity {
     private RecyclerView recyclerView_frag;
     private Authtoken token;
     private List<speakerDetails> speakerdetails;
+    private Toolbar actionBar;
+    private EventsFragment fragment;
 
     @Override
+    //this is only called when Login is successful.
+    //this should generate the list
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.events_activity);
-        Toolbar actionBar = findViewById(R.id.toolbar);
+
+        actionBar = findViewById(R.id.toolbar);
         setSupportActionBar(actionBar);
+
         speakerdetails = new ArrayList<>();
 
         Intent intent = getIntent();
@@ -69,19 +77,28 @@ public class Events extends AppCompatActivity {
         });
     }
 
+    //This event is triggered when the user press on an event. This will set up the fragment
     public void onEventClick(View view) {
         List<EventData> eventData = adapter.getEventlist();
         setUpFragment(eventData.get(recyclerView.getChildLayoutPosition(view)).getItemid());
-        //Bundle bundle = new Bundle();
-        //bundle.putString("edttext", "From Activity");
-        // set Fragmentclass Arguments
-        //EventsFragment fragobj = new EventsFragment();
-        //fragobj.setArguments(bundle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        actionBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setDisplayShowHomeEnabled(false);
+                getSupportFragmentManager().beginTransaction().remove(fragment).commitNow();
+            }
+        });
+        fragment = EventsFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, EventsFragment.newInstance())
+                .replace(R.id.container, fragment)
                 .commit();
     }
 
+    //used by the onCreate to set the view
     public void generateDataList(List<EventData> eventList) {
         recyclerView = findViewById(R.id.eventsRecyclerView);
         adapter = new DataListAdapter(this, eventList);
@@ -91,44 +108,55 @@ public class Events extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    //main method to create the fragment
     private void setUpFragment(int itemposition) {
-        GetDataService service = RetrofitClient.getRetrofitInstance().create(GetDataService.class);
-        Call<EventDetails> call = service.getEvent(token.getToken(), itemposition);
-        call.enqueue(new Callback<EventDetails>() {
-            @Override
-            public void onResponse(Call<EventDetails> call, Response<EventDetails> response) {
-                ImageView imageView = findViewById(R.id.eventViewFrag);
+        try {
+            GetDataService service = RetrofitClient.getRetrofitInstance().create(GetDataService.class);
+            Call<EventDetails> call = service.getEvent(token.getToken(), itemposition);
+            call.enqueue(new Callback<EventDetails>() {
+                @Override
+                public void onResponse(Call<EventDetails> call, Response<EventDetails> response) {
+                    ImageView imageView = findViewById(R.id.eventViewFrag);
 
-                Picasso.Builder builder = new Picasso.Builder(Events.this);
-                builder.downloader(new OkHttp3Downloader(Events.this));
-                builder.build().load(response.body().getUrlimage())
-                        .placeholder(R.drawable.ic_launcher_background)
-                        .error(R.drawable.ic_launcher_background)
-                        .into(imageView);
+                    Picasso.Builder builder = new Picasso.Builder(Events.this);
+                    builder.downloader(new OkHttp3Downloader(Events.this));
+                    builder.build().load(response.body().getUrlimage())
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .error(R.drawable.ic_launcher_background)
+                            .into(imageView);
 
-                TextView title = findViewById(R.id.eventTitleFrag);
-                TextView summary = findViewById(R.id.eventSummaryFrag);
-                TextView startdate = findViewById(R.id.eventDateFrag);
-                TextView location = findViewById(R.id.eventLocationFrag);
-                LinearLayout linear = findViewById(R.id.linearLayoutFrag);
-                title.setText(response.body().getItemtitle());
-                summary.setText(response.body().getEventSummary());
-                startdate.setText(response.body().getStartdatetime().toString());
-                location.setText(response.body().getItemlocation());
-                setupSpeakers(response.body().getSpeakerids());
-                recyclerView_frag = findViewById(R.id.eventSpeakerFrag);
-                recyclerView_frag.setNestedScrollingEnabled(false);
-            }
+                    TextView title = findViewById(R.id.eventTitleFrag);
+                    TextView summary = findViewById(R.id.eventSummaryFrag);
+                    TextView startdate = findViewById(R.id.eventDateFrag);
+                    TextView location = findViewById(R.id.eventLocationFrag);
+                    LinearLayout linear = findViewById(R.id.linearLayoutFrag);
+                    title.setText(response.body().getItemtitle());
+                    summary.setText(response.body().getEventSummary());
+                    startdate.setText(response.body().getStartdatetime().toString());
+                    location.setText(response.body().getItemlocation());
+                    setupSpeakers(response.body().getSpeakerids());
+                    recyclerView_frag = findViewById(R.id.eventSpeakerFrag);
+                    recyclerView_frag.setNestedScrollingEnabled(false);
+                }
 
-            @Override
-            public void onFailure(Call<EventDetails> call, Throwable t) {
-                Toast.makeText(Events.this, "Oops! Something went wrong...", Toast.LENGTH_LONG).show();
-                t.printStackTrace();
-            }
-        });
+                @Override
+                public void onFailure(Call<EventDetails> call, Throwable t) {
+                    Toast.makeText(Events.this, "Oops! Something went wrong...", Toast.LENGTH_LONG).show();
+                    t.printStackTrace();
+                }
+            });
+        }
+        catch (Exception e){
+            AlertFactory factory = new AlertFactory();
+            factory.showAlert("An error occurred.",Events.this);
+            Intent loginIntent = new Intent(Events.this,LoginPage.class);
+            startActivity(loginIntent);
+
+        }
 
     }
 
+    //This is a seperate method to set up the list of speakers in the fragment
     private void setupSpeakers(final List<speakerIdentity> speakerids) {
         GetDataService service = RetrofitClient.getRetrofitInstance().create(GetDataService.class);
         for (int i = 0; i < speakerids.size(); i++) {
@@ -137,7 +165,6 @@ public class Events extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<speakerDetails> call, Response<speakerDetails> response) {
                     addSpeakerDetails(response.body());
-                    //Log.d("SetupSpeakers","speaker size: "+speakerdetails.size());
                 }
 
                 @Override
@@ -148,6 +175,7 @@ public class Events extends AppCompatActivity {
         }
     }
 
+    //this is called to set the view in the recycler view
     private void addSpeakerDetails(speakerDetails speakerDetails){
         speakerdetails.add(speakerDetails);
         Log.d("addSpeakerDetails","added a new detail");
@@ -158,4 +186,24 @@ public class Events extends AppCompatActivity {
         recyclerView_frag.addItemDecoration(new DividerItemDecoration(recyclerView_frag.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView_frag.setAdapter(adapter_frag);
     }
+
+    @Override
+    //this is used to show the option menu
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.event_menu, menu);
+        return true;
+    }
+
+    //when the user press on the logout option, it should bring them back to the Login screen
+    public void onLogout(MenuItem item){
+        token = null;
+        try{
+            Intent loginIntent = new Intent(Events.this,LoginPage.class);
+            startActivity(loginIntent);
+        }
+        catch(Exception e) {
+            Toast.makeText(Events.this, "Oops! Something went wrong...", Toast.LENGTH_LONG).show();
+        }
+    }
+
 }

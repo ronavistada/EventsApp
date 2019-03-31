@@ -8,4 +8,5 @@
     <string name="Event_Name"></string>
     <string name="Event_Date"></string>
     <string name="Event_Image">Snapshot of the event</string>
+    <string name="logout_action">Logout</string>
 </resources>
