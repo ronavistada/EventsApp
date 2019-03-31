@@ -1,6 +1,7 @@
 package example.com.eventsapp.AppServices;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,14 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import example.com.eventsapp.DataClasses.EventData;
+import example.com.eventsapp.Events;
 import example.com.eventsapp.R;
 
 public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.CustomViewHolder> {
@@ -46,6 +48,7 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.Custom
         builder.build().load(eventlist.get(i).getUrlimage())
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
+                .fit()
                 .into(customViewHolder.coverImage);
     }
 
@@ -72,5 +75,8 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.Custom
         }
     }
 
+    public List<EventData> getEventlist() {
+        return eventlist;
+    }
 
 }

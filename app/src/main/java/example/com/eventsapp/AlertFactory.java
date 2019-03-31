@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
-class AlertFactory {
+public class AlertFactory {
 
     public void showAlert(String message, Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

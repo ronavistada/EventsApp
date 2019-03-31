@@ -1,6 +1,6 @@
 package example.com.eventsapp.ui.events;
 
-import android.arch.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,8 +13,6 @@ import example.com.eventsapp.R;
 
 public class EventsFragment extends Fragment {
 
-    private EventsViewModel mViewModel;
-
     public static EventsFragment newInstance() {
         return new EventsFragment();
     }
@@ -23,14 +21,11 @@ public class EventsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.events_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.events_fragment, container, false);
+        return rootView;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(EventsViewModel.class);
-        // TODO: Use the ViewModel
-    }
+
+
 
 }
