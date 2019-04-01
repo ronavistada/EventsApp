@@ -1,7 +1,6 @@
 package example.com.eventsapp.AppServices;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,15 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import example.com.eventsapp.DataClasses.EventData;
-import example.com.eventsapp.Events;
 import example.com.eventsapp.R;
 
 public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.CustomViewHolder> {
@@ -41,7 +39,20 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.Custom
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder customViewHolder, int i) {
         customViewHolder.eventName.setText(eventlist.get(i).getItemtitle());
-        customViewHolder.eventDate.setText(eventlist.get(i).getStartdatetime().toString());
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yy h:mm");
+        String date = DATE_FORMAT.format(eventlist.get(i).getStartdatetime());
+        if (eventlist.get(i).getStartdatetime().getHours() < 12)
+            date = date + "AM - ";
+        else
+            date = date + "PM - ";
+
+        DATE_FORMAT = new SimpleDateFormat("h:mm");
+        date = date + DATE_FORMAT.format(eventlist.get(i).getEnddatetime());
+        if (eventlist.get(i).getEnddatetime().getHours() < 12)
+            date = date + "AM";
+        else
+            date = date + "PM";
+        customViewHolder.eventDate.setText(date);
 
         Picasso.Builder builder = new Picasso.Builder(context);
         builder.downloader(new OkHttp3Downloader(context));

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +58,6 @@ public class Events extends AppCompatActivity {
         actionBar = findViewById(R.id.toolbar);
         setSupportActionBar(actionBar);
 
-        speakerdetails = new ArrayList<>();
-
         Intent intent = getIntent();
         token = new Authtoken(intent.getStringExtra(LoginPage.Extra_Data));
         GetDataService service = RetrofitClient.getRetrofitInstance().create(GetDataService.class);
@@ -72,7 +71,6 @@ public class Events extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<EventData>> call, Throwable t) {
                 Toast.makeText(Events.this, "Oops! Something went wrong...", Toast.LENGTH_LONG).show();
-                t.printStackTrace();
             }
         });
     }
@@ -110,7 +108,6 @@ public class Events extends AppCompatActivity {
 
     //main method to create the fragment
     private void setUpFragment(int itemposition) {
-        try {
             GetDataService service = RetrofitClient.getRetrofitInstance().create(GetDataService.class);
             Call<EventDetails> call = service.getEvent(token.getToken(), itemposition);
             call.enqueue(new Callback<EventDetails>() {
@@ -129,10 +126,24 @@ public class Events extends AppCompatActivity {
                     TextView summary = findViewById(R.id.eventSummaryFrag);
                     TextView startdate = findViewById(R.id.eventDateFrag);
                     TextView location = findViewById(R.id.eventLocationFrag);
-                    LinearLayout linear = findViewById(R.id.linearLayoutFrag);
+
                     title.setText(response.body().getItemtitle());
                     summary.setText(response.body().getEventSummary());
-                    startdate.setText(response.body().getStartdatetime().toString());
+
+                    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yy h:mm");
+                    String date = DATE_FORMAT.format(response.body().getStartdatetime());
+                    if (response.body().getStartdatetime().getHours() < 12)
+                        date = date + "AM - ";
+                    else
+                        date = date + "PM - ";
+
+                    DATE_FORMAT = new SimpleDateFormat("h:mm");
+                    date = date + DATE_FORMAT.format(response.body().getEnddatetime());
+                    if (response.body().getEnddatetime().getHours() < 12)
+                        date = date + "AM";
+                    else
+                        date = date + "PM";
+                    startdate.setText(date);
                     location.setText(response.body().getItemlocation());
                     setupSpeakers(response.body().getSpeakerids());
                     recyclerView_frag = findViewById(R.id.eventSpeakerFrag);
@@ -142,22 +153,18 @@ public class Events extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<EventDetails> call, Throwable t) {
                     Toast.makeText(Events.this, "Oops! Something went wrong...", Toast.LENGTH_LONG).show();
-                    t.printStackTrace();
+                    View view = findViewById(R.id.dividerFrag);
+                    view.setVisibility(View.INVISIBLE);
+                    ImageView imageView = findViewById(R.id.eventViewFrag);
+                    imageView.setVisibility(View.INVISIBLE);
                 }
             });
-        }
-        catch (Exception e){
-            AlertFactory factory = new AlertFactory();
-            factory.showAlert("An error occurred.",Events.this);
-            Intent loginIntent = new Intent(Events.this,LoginPage.class);
-            startActivity(loginIntent);
-
-        }
 
     }
 
     //This is a seperate method to set up the list of speakers in the fragment
     private void setupSpeakers(final List<speakerIdentity> speakerids) {
+        speakerdetails = new ArrayList<>();
         GetDataService service = RetrofitClient.getRetrofitInstance().create(GetDataService.class);
         for (int i = 0; i < speakerids.size(); i++) {
             Call<speakerDetails> call = service.getSpeaker(token.getToken(), speakerids.get(i).getSpeakerid());
@@ -204,6 +211,16 @@ public class Events extends AppCompatActivity {
         catch(Exception e) {
             Toast.makeText(Events.this, "Oops! Something went wrong...", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void onSpeakerClick(View view){
+        List<speakerDetails> speakerData = adapter_frag.getSpeakerlist();
+
+        ImageView imageView = view.findViewById(R.id.speakerImageFrag);
+        TextView texthint = view.findViewById(R.id.imageHintFrag);
+        texthint.setVisibility(View.INVISIBLE);
+
+        imageView.setVisibility(View.VISIBLE);
     }
 
 }

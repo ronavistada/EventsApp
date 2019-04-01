@@ -36,8 +36,8 @@
                 android:id="@+id/eventTitleFrag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14pt"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:textSize="12pt" />
 
             <TextView
                 android:id="@+id/eventDateFrag"
@@ -50,18 +50,23 @@
                 android:id="@+id/eventSummaryFrag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="16dp"
+                android:lineSpacingExtra="2sp" />
 
             <TextView
                 android:id="@+id/eventLocationFrag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:autoLink="map"
                 android:textAlignment="center"
-                android:layout_marginBottom="8dp"/>
+                android:textStyle="bold" />
+
             <View
+                android:id="@+id/dividerFrag"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#D3D3D3"/>
+                android:background="#D3D3D3" />
 
 
             <android.support.v7.widget.RecyclerView

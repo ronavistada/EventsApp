@@ -6,7 +6,6 @@ import example.com.eventsapp.DataClasses.EventData;
 import example.com.eventsapp.DataClasses.EventDetails;
 import example.com.eventsapp.DataClasses.speakerDetails;
 import retrofit2.Call;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;

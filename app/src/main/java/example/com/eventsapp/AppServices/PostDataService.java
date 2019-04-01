@@ -1,7 +1,5 @@
 package example.com.eventsapp.AppServices;
 
-import java.util.List;
-
 import example.com.eventsapp.DataClasses.Authtoken;
 import retrofit2.Call;
 import retrofit2.http.Field;

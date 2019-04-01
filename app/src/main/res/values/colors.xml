@@ -5,5 +5,6 @@
     <color name="colorAccent">#03446A</color>
     <color name="defaultTextColor">#FFFFFF</color>
     <color name="hintColor">#C0C0C0</color>
-    <color name="dateColor">#C0C0C0</color>
+    <color name="dateColor">#839192</color>
+    <color name="EventTitle">#000000</color>
 </resources>
