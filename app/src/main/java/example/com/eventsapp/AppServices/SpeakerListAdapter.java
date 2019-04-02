@@ -17,7 +17,7 @@ import java.util.List;
 import example.com.eventsapp.DataClasses.speakerDetails;
 import example.com.eventsapp.Events;
 import example.com.eventsapp.R;
-
+//This class is for setting up the list of speakers
 public class SpeakerListAdapter extends RecyclerView.Adapter<SpeakerListAdapter.CustomViewHolder> {
 
     private List<speakerDetails> speakerlist;

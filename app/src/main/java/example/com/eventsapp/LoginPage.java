@@ -3,7 +3,6 @@ package example.com.eventsapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -52,7 +51,6 @@ public class LoginPage extends AppCompatActivity {
 
     public void onLogin(View view){ //this method would validate the information entered by the user
         if(usernameInput.getText().toString().isEmpty()){
-            Log.i("Main","Username Imput: "+usernameInput.getText().toString());
             validateMessage.setText("A username is required.");
             validateMessage.setVisibility(View.VISIBLE);
         }
@@ -73,16 +71,13 @@ public class LoginPage extends AppCompatActivity {
         call.enqueue(new Callback<Authtoken>() {
             @Override
             public void onResponse(Call<Authtoken> call, Response<Authtoken> response) {
-                Log.i("LoginPage","Got a response");
                 token = response.body();
                 checkAuth();
             }
 
             @Override
             public void onFailure(Call<Authtoken> call, Throwable t) {
-                Log.i("LoginPage","Login failed!");
                 Toast.makeText(LoginPage.this,"Login failed!",Toast.LENGTH_SHORT).show();
-                t.printStackTrace();
             }
         });
     }

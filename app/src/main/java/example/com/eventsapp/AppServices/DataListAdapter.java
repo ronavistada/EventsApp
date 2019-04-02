@@ -17,7 +17,7 @@ import java.util.List;
 
 import example.com.eventsapp.DataClasses.EventData;
 import example.com.eventsapp.R;
-
+//class for setiing up event list
 public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.CustomViewHolder> {
 
     private List<EventData> eventlist;

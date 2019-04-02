@@ -7,12 +7,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -185,7 +183,6 @@ public class Events extends AppCompatActivity {
     //this is called to set the view in the recycler view
     private void addSpeakerDetails(speakerDetails speakerDetails){
         speakerdetails.add(speakerDetails);
-        Log.d("addSpeakerDetails","added a new detail");
         recyclerView_frag = findViewById(R.id.eventSpeakerFrag);
         adapter_frag = new SpeakerListAdapter(Events.this,speakerdetails);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(Events.this);
